@@ -1,0 +1,84 @@
+# Default values for clustregcred-operator.
+
+# Number of replicas
+replicaCount: 1
+
+image:
+  repository: clustregcred-operator
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# Pod annotations
+podAnnotations: {}
+
+# Pod security context
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# Container security context
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+# Resource limits and requests
+resources:
+  limits:
+    cpu: 500m
+    memory: 128Mi
+  requests:
+    cpu: 10m
+    memory: 64Mi
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity rules
+affinity: {}
+
+# Leader election configuration
+leaderElection:
+  enabled: true
+
+# Metrics configuration
+metrics:
+  enabled: true
+  port: 8080
+
+# Health probes configuration
+healthProbe:
+  port: 8081
+
+# Logging configuration
+logging:
+  development: true
+
+# ClustRegCred instances to create (optional)
+# This allows creating ClustRegCred resources as part of the Helm release
+clustRegCreds: []
+  # - name: dockerhub-cred
+  #   registry: "https://index.docker.io/v1/"
+  #   username: "your-username"
+  #   password: "your-password"
+  #   email: "your-email@example.com"
+  #   secretName: "dockerhub-pull-secret"

@@ -1,0 +1,60 @@
+🎉 ClustRegCred Operator has been successfully deployed!
+
+📋 Release Info:
+   Name:      {{ .Release.Name }}
+   Namespace: {{ .Release.Namespace }}
+
+📖 Quick Start Guide:
+
+1. Verify the operator is running:
+   kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "clustregcred-operator.name" . }}
+
+2. Create a ClustRegCred resource:
+
+   cat <<EOF | kubectl apply -f -
+   apiVersion: grid.maozi.io/v1alpha1
+   kind: ClustRegCred
+   metadata:
+     name: my-registry-cred
+   spec:
+     registry: "https://index.docker.io/v1/"
+     username: "your-username"
+     password: "your-password"
+     email: "your-email@example.com"
+     secretName: "my-pull-secret"
+   EOF
+
+3. Create a namespace with the annotation to trigger secret sync:
+
+   cat <<EOF | kubectl apply -f -
+   apiVersion: v1
+   kind: Namespace
+   metadata:
+     name: my-app
+     annotations:
+       grid.maozi.io/clustreg: "my-registry-cred"
+   EOF
+
+4. Verify the secret was created:
+   kubectl get secret my-pull-secret -n my-app
+
+5. Check ClustRegCred status:
+   kubectl get clustregcreds
+   kubectl describe crc my-registry-cred
+
+{{- if .Values.clustRegCreds }}
+
+📦 Pre-configured ClustRegCreds:
+{{- range .Values.clustRegCreds }}
+   - {{ .name }} (registry: {{ .registry }}, secretName: {{ .secretName }})
+{{- end }}
+{{- end }}
+
+📚 Documentation: https://github.com/maozi/clustregcred-operator
+
+🔧 Useful Commands:
+   # List all ClustRegCreds
+   kubectl get crc
+
+   # View operator logs
+   kubectl logs -n {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "clustregcred-operator.name" . }} -f

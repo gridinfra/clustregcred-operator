@@ -1,0 +1,17 @@
+{{- range .Values.clustRegCreds }}
+---
+apiVersion: grid.maozi.io/v1alpha1
+kind: ClustRegCred
+metadata:
+  name: {{ .name }}
+  labels:
+    {{- include "clustregcred-operator.labels" $ | nindent 4 }}
+spec:
+  registry: {{ .registry | quote }}
+  username: {{ .username | quote }}
+  password: {{ .password | quote }}
+  {{- if .email }}
+  email: {{ .email | quote }}
+  {{- end }}
+  secretName: {{ .secretName | quote }}
+{{- end }}

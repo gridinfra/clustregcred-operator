@@ -1,0 +1,47 @@
+# ClustRegCred for Docker Hub
+apiVersion: grid.maozi.io/v1alpha1
+kind: ClustRegCred
+metadata:
+  name: dockerhub-cred
+spec:
+  # Container registry URL
+  registry: "https://index.docker.io/v1/"
+  # Username for authenticating to the container registry
+  username: "your-username"
+  # Password for authenticating to the container registry
+  password: "your-password"
+  # Email associated with the container registry account (optional)
+  email: "your-email@example.com"
+  # Name for the image pull secret in each namespace
+  secretName: "dockerhub-pull-secret"
+---
+# ClustRegCred for GitHub Container Registry
+apiVersion: grid.maozi.io/v1alpha1
+kind: ClustRegCred
+metadata:
+  name: ghcr-cred
+spec:
+  registry: "ghcr.io"
+  username: "your-github-username"
+  password: "ghp_your_github_token"
+  email: ""
+  secretName: "ghcr-pull-secret"
+---
+# Example 1: Namespace with single ClustRegCred
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-namespace-single
+  annotations:
+    # Single ClustRegCred - creates one secret
+    grid.maozi.io/clustreg: "dockerhub-cred"
+---
+# Example 2: Namespace with multiple ClustRegCreds (comma-separated)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-namespace-multi
+  annotations:
+    # Multiple ClustRegCreds - creates multiple secrets
+    # Supports comma-separated list
+    grid.maozi.io/clustreg: "dockerhub-cred,ghcr-cred"
